@@ -71,7 +71,8 @@ class Main {
         _engine.addEntity(playerEntity);
     }
 
-    function animate() {
+    function animate()
+    {
 
         Browser.window.requestAnimationFrame(cast animate);
 
@@ -79,7 +80,8 @@ class Main {
         _renderer.render(_stage);
     }
 
-    static function main() {
+    static function main()
+    {
         new Main();
     }
 }
