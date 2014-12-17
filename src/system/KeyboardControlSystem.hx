@@ -1,6 +1,6 @@
 package system;
 
-import haxe.ds.EnumValueMap;
+import haxe.ds.GenericStack;
 import js.html.DOMWindow;
 import js.html.KeyboardEvent;
 
@@ -10,21 +10,23 @@ import node.KeyboardControlNode;
 
 enum ArrowKey
 {
-    Left;
-    Right;
     Up;
     Down;
+    Left;
+    Right;
 }
 
 class KeyboardControlSystem extends ListIteratingSystem<KeyboardControlNode>
 {
-    var _keysDown : EnumValueMap<ArrowKey, Bool>;
+    // only the first key in the stack is used, i.e. the last key pressed
+    var _keyStack : GenericStack<ArrowKey>;
+    var _lockUp : Bool;
 
     public function new(window : DOMWindow)
     {
         super(KeyboardControlNode, updateNode);
 
-        _keysDown = new EnumValueMap<ArrowKey,Bool>();
+        _keyStack = new GenericStack<ArrowKey>();
 
         window.onkeydown = onKeyDown;
         window.onkeyup = onKeyUp;
@@ -35,13 +37,17 @@ class KeyboardControlSystem extends ListIteratingSystem<KeyboardControlNode>
         switch(event.keyIdentifier)
         {
             case "Up":
-                _keysDown.set(Up, true);
+                _keyStack.remove(Up);
+                _keyStack.add(Up);
             case "Down":
-                _keysDown.set(Down, true);
+                _keyStack.remove(Down);
+                _keyStack.add(Down);
             case "Left":
-                _keysDown.set(Left, true);
+                _keyStack.remove(Left);
+                _keyStack.add(Left);
             case "Right":
-                _keysDown.set(Right, true);
+                _keyStack.remove(Right);
+                _keyStack.add(Right);
         }
     }
 
@@ -50,25 +56,41 @@ class KeyboardControlSystem extends ListIteratingSystem<KeyboardControlNode>
         switch(event.keyIdentifier)
         {
             case "Up":
-                _keysDown.set(Up, false);
+                _keyStack.remove(Up);
+                _lockUp = false;
             case "Down":
-                _keysDown.set(Down, false);
+                _keyStack.remove(Down);
             case "Left":
-                _keysDown.set(Left, false);
+                _keyStack.remove(Left);
             case "Right":
-                _keysDown.set(Right, false);
+                _keyStack.remove(Right);
         }
     }
 
     function updateNode(node : KeyboardControlNode, time : Float):Void
     {
-        if(_keysDown.get(Right))
+        switch(_keyStack.first())
         {
-            node.position.x += 1;
-        }
-        if(_keysDown.get(Left))
-        {
-            node.position.x -= 1;
+            case Left:
+                node.velocity.xAxis--;
+            case Right:
+                node.velocity.xAxis++;
+            case Up:
+                // prevents from pressing up continously
+
+                if(!_lockUp)
+                {
+                    // prevents jumping while not on the ground
+                    if(node.velocity.yAxis == 0)
+                    {
+                        var jumpHeight = 10 + Math.abs(node.velocity.xAxis) * .5;
+                        node.velocity.yAxis = Std.int(Math.min(20, jumpHeight));
+                    }
+                    _lockUp = true;
+                }
+            case Down:
+                // node.velocity.yAxis--;
+            case null:
         }
     }
 }

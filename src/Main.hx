@@ -17,10 +17,13 @@ import ash.core.Entity;
 import system.SystemPriority;
 import system.DisplaySystem;
 import system.KeyboardControlSystem;
+import system.PhysicsSystem;
 
 import component.Display;
 import component.Position;
 import component.KeyboardControlled;
+import component.Velocity;
+import component.Box;
 
 class Main {
 
@@ -48,6 +51,7 @@ class Main {
 
         _engine = new Engine();
         _engine.addSystem(new KeyboardControlSystem(Browser.window), SystemPriority.INPUT);
+        _engine.addSystem(new PhysicsSystem({width: WIDTH, height: HEIGHT}), SystemPriority.PHYSICS);
         _engine.addSystem(new DisplaySystem(_stage), SystemPriority.RENDERING);
 
         Browser.window.requestAnimationFrame(cast animate);
@@ -65,17 +69,16 @@ class Main {
 
         var playerEntity = new Entity();
         playerEntity.add(new Display(new Sprite(texture)));
-        playerEntity.add(new Position(0, HEIGHT - Std.int(texture.height)));
-        playerEntity.add(new
-            KeyboardControlled());
+        playerEntity.add(new Position(Std.int(WIDTH / 2), 0));
+        playerEntity.add(new KeyboardControlled());
+        playerEntity.add(new Velocity());
+        playerEntity.add(new Box(Std.int(texture.width), Std.int(texture.height)));
         _engine.addEntity(playerEntity);
     }
 
     function animate()
     {
-
         Browser.window.requestAnimationFrame(cast animate);
-
         _engine.update(1/60);
         _renderer.render(_stage);
     }
