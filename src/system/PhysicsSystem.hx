@@ -3,6 +3,8 @@ package system;
 import ash.tools.ListIteratingSystem;
 import node.BodyNode;
 
+import component.Oriented;
+
 typedef WorldBounds = {width: Int, height : Int};
 
 class PhysicsSystem extends ListIteratingSystem<BodyNode>
@@ -21,9 +23,17 @@ class PhysicsSystem extends ListIteratingSystem<BodyNode>
         var vel = node.velocity;
         if(-0.01 > vel.xAxis || vel.xAxis > 0.01)
         {
+            if(node.orientation != null)
+            {
+                if (vel.xAxis < 0 && node.orientation.value == Right)
+                    node.orientation.value = Left;
+                else if (vel.xAxis > 0 && node.orientation.value == Left)
+                    node.orientation.value = Right;
+            }
             node.position.x += Std.int(vel.xAxis);
             vel.xAxis *= .9;
         }
+
         var maxY = _world.height - node.box.height;
         var groundDistance = maxY - node.position.y;
 

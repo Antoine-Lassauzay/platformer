@@ -24,6 +24,7 @@ import component.Position;
 import component.KeyboardControlled;
 import component.Velocity;
 import component.Box;
+import component.Oriented;
 
 class Main {
 
@@ -66,13 +67,16 @@ class Main {
         _stage.addChild(background);
 
         texture = Texture.fromFrame("p1_walk08.png");
+        var playerSprite = new Sprite(texture);
+        playerSprite.pivot.set(texture.width * .5, 0);
 
         var playerEntity = new Entity();
-        playerEntity.add(new Display(new Sprite(texture)));
+        playerEntity.add(new Display(playerSprite));
         playerEntity.add(new Position(Std.int(WIDTH / 2), 0));
         playerEntity.add(new KeyboardControlled());
         playerEntity.add(new Velocity());
         playerEntity.add(new Box(Std.int(texture.width), Std.int(texture.height)));
+        playerEntity.add(new Oriented(Right));
         _engine.addEntity(playerEntity);
     }
 

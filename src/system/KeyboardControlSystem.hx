@@ -77,16 +77,11 @@ class KeyboardControlSystem extends ListIteratingSystem<KeyboardControlNode>
                 node.velocity.xAxis++;
             case Up:
                 // prevents from pressing up continously
-
-                if(!_lockUp)
+                _keyStack.remove(Up);
+                if(node.velocity.yAxis == 0)
                 {
-                    // prevents jumping while not on the ground
-                    if(node.velocity.yAxis == 0)
-                    {
-                        var jumpHeight = 10 + Math.abs(node.velocity.xAxis) * .5;
-                        node.velocity.yAxis = Std.int(Math.min(20, jumpHeight));
-                    }
-                    _lockUp = true;
+                    var jumpHeight = 10 + Math.abs(node.velocity.xAxis) * .5;
+                    node.velocity.yAxis = Std.int(Math.min(20, jumpHeight));
                 }
             case Down:
                 // node.velocity.yAxis--;
