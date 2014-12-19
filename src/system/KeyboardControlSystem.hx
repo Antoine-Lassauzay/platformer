@@ -72,20 +72,41 @@ class KeyboardControlSystem extends ListIteratingSystem<KeyboardControlNode>
         switch(_keyStack.first())
         {
             case Left:
-                node.velocity.xAxis--;
-            case Right:
-                node.velocity.xAxis++;
-            case Up:
-                // prevents from pressing up continously
-                _keyStack.remove(Up);
-                if(node.velocity.yAxis == 0)
+
+                if(node.position.downToGround)
                 {
+                    if(node.movement!= null && node.movement.value != Walking)
+                    node.movement.value = Walking;
+
+                    node.velocity.xAxis--;
+                }
+
+            case Right:
+
+                if(node.position.downToGround)
+                {
+                    if(node.movement!= null && node.movement.value != Walking)
+                        node.movement.value = Walking;
+
+                    node.velocity.xAxis++;
+                }
+
+            case Up:
+                if(node.position.downToGround)
+                {
+                    if(node.movement!= null && node.movement.value != Jump)
+                        node.movement.value = Jump;
                     var jumpHeight = 10 + Math.abs(node.velocity.xAxis) * .5;
                     node.velocity.yAxis = Std.int(Math.min(20, jumpHeight));
                 }
             case Down:
                 // node.velocity.yAxis--;
             case null:
+                if(node.position.downToGround)
+                {
+                    if(node.movement!= null && node.movement.value != Still)
+                        node.movement.value = Still;
+                }
         }
     }
 }

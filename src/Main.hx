@@ -18,8 +18,11 @@ import system.SystemPriority;
 import system.DisplaySystem;
 import system.KeyboardControlSystem;
 import system.PhysicsSystem;
+import system.CharacterSystem;
 
 import component.Display;
+import component.StatefulDisplay;
+import component.Movement;
 import component.Position;
 import component.KeyboardControlled;
 import component.Velocity;
@@ -54,6 +57,7 @@ class Main {
         _engine.addSystem(new KeyboardControlSystem(Browser.window), SystemPriority.INPUT);
         _engine.addSystem(new PhysicsSystem({width: WIDTH, height: HEIGHT}), SystemPriority.PHYSICS);
         _engine.addSystem(new DisplaySystem(_stage), SystemPriority.RENDERING);
+        _engine.addSystem(new CharacterSystem(), SystemPriority.RENDERING);
 
         Browser.window.requestAnimationFrame(cast animate);
     }
@@ -66,16 +70,24 @@ class Main {
         background.height = 600;
         _stage.addChild(background);
 
-        texture = Texture.fromFrame("p1_walk08.png");
-        var playerSprite = new Sprite(texture);
-        playerSprite.pivot.set(texture.width * .5, 0);
+        var textures = [
+            for (i in 1...11)
+                Texture.fromFrame(
+                    "p1_walk" + StringTools.lpad(Std.string(i), "0", 2) + ".png"
+                )
+        ];
+        var playerSprite = new MovieClip(textures);
+        playerSprite.pivot.set(textures[0].width * .5, 0);
 
         var playerEntity = new Entity();
         playerEntity.add(new Display(playerSprite));
+        playerEntity.add(new StatefulDisplay(playerSprite));
+        playerEntity.add(new Movement(Still));
         playerEntity.add(new Position(Std.int(WIDTH / 2), 0));
         playerEntity.add(new KeyboardControlled());
         playerEntity.add(new Velocity());
-        playerEntity.add(new Box(Std.int(texture.width), Std.int(texture.height)));
+        playerEntity.add(new Box(Std.int(textures[0].width),
+                                 Std.int(textures[0].height)));
         playerEntity.add(new Oriented(Right));
         _engine.addEntity(playerEntity);
     }

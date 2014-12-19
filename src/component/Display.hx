@@ -2,7 +2,8 @@ package component;
 
 import pixi.display.DisplayObject;
 import pixi.display.DisplayObjectContainer;
-import pixi.geom.Point;
+
+import component.Position;
 
 class Display
 {
@@ -20,10 +21,22 @@ class Display
         parent.addChild(_displayObject);
     }
 
-    public function setTo(position : Position)
+    public function setTo(position : Position) : Bool
     {
-        _displayObject.x = position.x;
-        _displayObject.y = position.y;
+        var updated = false;
+        if(position.x != _displayObject.x)
+        {
+            _displayObject.x = position.x;
+            updated = true;
+        }
+
+        if(position.y != _displayObject.y)
+        {
+            _displayObject.y = position.y;
+            updated = true;
+        }
+
+        return updated;
     }
 
     function set_scaleX(v : Float) : Float
