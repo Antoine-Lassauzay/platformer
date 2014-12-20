@@ -23,6 +23,6 @@ class StatefulDisplay
 
     public function stop() : Void
     {
-        _movieClip.gotoAndStop(0);
+        _movieClip.gotoAndStop(8);
     }
 }

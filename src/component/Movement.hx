@@ -15,6 +15,7 @@ class Movement
     public function new(current : MovementType)
     {
         value = current;
+        invalidated = true;
     }
 
     public function set_value(newValue)
