@@ -42,16 +42,7 @@ Main.prototype = {
 		background.width = 800;
 		background.height = 600;
 		this._stage.addChild(background);
-		var textures;
-		var _g = [];
-		var _g1 = 1;
-		while(_g1 < 11) {
-			var i = _g1++;
-			_g.push(PIXI.Texture.fromFrame("p1_walk" + StringTools.lpad(i == null?"null":"" + i,"0",2) + ".png"));
-		}
-		textures = _g;
-		var playerSprite = new PIXI.MovieClip(textures);
-		playerSprite.pivot.set(textures[0].width * .5,0);
+		var playerSprite = component.StatefulDisplay.buildPlayerSprite();
 		var playerEntity = new ash.core.Entity();
 		playerEntity.add(new component.Display(playerSprite));
 		playerEntity.add(new component.StatefulDisplay(playerSprite));
@@ -59,7 +50,7 @@ Main.prototype = {
 		playerEntity.add(new component.Position(400,0));
 		playerEntity.add(new component.KeyboardControlled());
 		playerEntity.add(new component.Velocity());
-		playerEntity.add(new component.Box(textures[0].width | 0,textures[0].height | 0));
+		playerEntity.add(new component.Box(playerSprite.width | 0,playerSprite.height | 0));
 		playerEntity.add(new component.Oriented(component.Orientation.Right));
 		this._engine.addEntity(playerEntity);
 	}
@@ -1086,6 +1077,7 @@ component.MovementType.Jump = ["Jump",2];
 component.MovementType.Jump.__enum__ = component.MovementType;
 component.Movement = function(current) {
 	this.set_value(current);
+	this.invalidated = true;
 };
 $hxClasses["component.Movement"] = component.Movement;
 component.Movement.__name__ = ["component","Movement"];
@@ -1123,18 +1115,45 @@ component.Position.prototype = {
 };
 component.StatefulDisplay = function(movie) {
 	this._movieClip = movie;
+	this._movieClip.animationSpeed = .5;
+	this._jumpTexture = PIXI.Texture.fromFrame("p1_jump.png");
 };
 $hxClasses["component.StatefulDisplay"] = component.StatefulDisplay;
 component.StatefulDisplay.__name__ = ["component","StatefulDisplay"];
+component.StatefulDisplay.buildPlayerSprite = function() {
+	var textures;
+	var _g = [];
+	var _g1 = 1;
+	while(_g1 < 11) {
+		var i = _g1++;
+		_g.push(PIXI.Texture.fromFrame("p1_walk" + StringTools.lpad(i == null?"null":"" + i,"0",2) + ".png"));
+	}
+	textures = _g;
+	var playerSprite = new PIXI.MovieClip(textures);
+	playerSprite.pivot.set(textures[0].width * .5,0);
+	return playerSprite;
+};
 component.StatefulDisplay.prototype = {
 	walk: function() {
+		if(this._jumpFlag) {
+			this._jumpFlag = false;
+			this._movieClip.textures.shift();
+		}
 		this._movieClip.play();
 	}
 	,jump: function() {
-		this._movieClip.gotoAndStop(6);
+		if(!this._jumpFlag) {
+			this._jumpFlag = true;
+			this._movieClip.textures.unshift(this._jumpTexture);
+			this._movieClip.gotoAndStop(0);
+		}
 	}
 	,stop: function() {
-		this._movieClip.gotoAndStop(0);
+		if(this._jumpFlag) {
+			this._jumpFlag = false;
+			this._movieClip.textures.shift();
+		}
+		this._movieClip.gotoAndStop(9);
 	}
 	,__class__: component.StatefulDisplay
 };
@@ -1547,14 +1566,12 @@ system.DisplaySystem.prototype = $extend(ash.tools.ListIteratingSystem.prototype
 	}
 	,__class__: system.DisplaySystem
 });
-system.ArrowKey = { __ename__ : true, __constructs__ : ["Up","Down","Left","Right"] };
+system.ArrowKey = { __ename__ : true, __constructs__ : ["Up","Left","Right"] };
 system.ArrowKey.Up = ["Up",0];
 system.ArrowKey.Up.__enum__ = system.ArrowKey;
-system.ArrowKey.Down = ["Down",1];
-system.ArrowKey.Down.__enum__ = system.ArrowKey;
-system.ArrowKey.Left = ["Left",2];
+system.ArrowKey.Left = ["Left",1];
 system.ArrowKey.Left.__enum__ = system.ArrowKey;
-system.ArrowKey.Right = ["Right",3];
+system.ArrowKey.Right = ["Right",2];
 system.ArrowKey.Right.__enum__ = system.ArrowKey;
 system.KeyboardControlSystem = function(window) {
 	ash.tools.ListIteratingSystem.call(this,node.KeyboardControlNode,$bind(this,this.updateNode));
@@ -1573,10 +1590,6 @@ system.KeyboardControlSystem.prototype = $extend(ash.tools.ListIteratingSystem.p
 			this._keyStack.remove(system.ArrowKey.Up);
 			this._keyStack.add(system.ArrowKey.Up);
 			break;
-		case "Down":
-			this._keyStack.remove(system.ArrowKey.Down);
-			this._keyStack.add(system.ArrowKey.Down);
-			break;
 		case "Left":
 			this._keyStack.remove(system.ArrowKey.Left);
 			this._keyStack.add(system.ArrowKey.Left);
@@ -1594,9 +1607,6 @@ system.KeyboardControlSystem.prototype = $extend(ash.tools.ListIteratingSystem.p
 			this._keyStack.remove(system.ArrowKey.Up);
 			this._lockUp = false;
 			break;
-		case "Down":
-			this._keyStack.remove(system.ArrowKey.Down);
-			break;
 		case "Left":
 			this._keyStack.remove(system.ArrowKey.Left);
 			break;
@@ -1612,13 +1622,13 @@ system.KeyboardControlSystem.prototype = $extend(ash.tools.ListIteratingSystem.p
 				if(node.movement != null && node.movement.value != component.MovementType.Still) node.movement.set_value(component.MovementType.Still);
 			}
 		} else switch(_g[1]) {
-		case 2:
+		case 1:
 			if(node.position.downToGround) {
 				if(node.movement != null && node.movement.value != component.MovementType.Walking) node.movement.set_value(component.MovementType.Walking);
 				node.velocity.xAxis--;
 			}
 			break;
-		case 3:
+		case 2:
 			if(node.position.downToGround) {
 				if(node.movement != null && node.movement.value != component.MovementType.Walking) node.movement.set_value(component.MovementType.Walking);
 				node.velocity.xAxis++;
@@ -1630,8 +1640,6 @@ system.KeyboardControlSystem.prototype = $extend(ash.tools.ListIteratingSystem.p
 				var jumpHeight = 10 + Math.abs(node.velocity.xAxis) * .5;
 				node.velocity.yAxis = Std["int"](Math.min(20,jumpHeight));
 			}
-			break;
-		case 1:
 			break;
 		}
 	}

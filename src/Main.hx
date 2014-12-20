@@ -70,14 +70,7 @@ class Main {
         background.height = 600;
         _stage.addChild(background);
 
-        var textures = [
-            for (i in 1...11)
-                Texture.fromFrame(
-                    "p1_walk" + StringTools.lpad(Std.string(i), "0", 2) + ".png"
-                )
-        ];
-        var playerSprite = new MovieClip(textures);
-        playerSprite.pivot.set(textures[0].width * .5, 0);
+        var playerSprite = StatefulDisplay.buildPlayerSprite();
 
         var playerEntity = new Entity();
         playerEntity.add(new Display(playerSprite));
@@ -86,8 +79,8 @@ class Main {
         playerEntity.add(new Position(Std.int(WIDTH / 2), 0));
         playerEntity.add(new KeyboardControlled());
         playerEntity.add(new Velocity());
-        playerEntity.add(new Box(Std.int(textures[0].width),
-                                 Std.int(textures[0].height)));
+        playerEntity.add(new Box(Std.int(playerSprite.width),
+                                 Std.int(playerSprite.height)));
         playerEntity.add(new Oriented(Right));
         _engine.addEntity(playerEntity);
     }

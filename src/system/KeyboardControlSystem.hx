@@ -11,7 +11,6 @@ import node.KeyboardControlNode;
 enum ArrowKey
 {
     Up;
-    Down;
     Left;
     Right;
 }
@@ -39,9 +38,6 @@ class KeyboardControlSystem extends ListIteratingSystem<KeyboardControlNode>
             case "Up":
                 _keyStack.remove(Up);
                 _keyStack.add(Up);
-            case "Down":
-                _keyStack.remove(Down);
-                _keyStack.add(Down);
             case "Left":
                 _keyStack.remove(Left);
                 _keyStack.add(Left);
@@ -58,8 +54,6 @@ class KeyboardControlSystem extends ListIteratingSystem<KeyboardControlNode>
             case "Up":
                 _keyStack.remove(Up);
                 _lockUp = false;
-            case "Down":
-                _keyStack.remove(Down);
             case "Left":
                 _keyStack.remove(Left);
             case "Right":
@@ -99,8 +93,6 @@ class KeyboardControlSystem extends ListIteratingSystem<KeyboardControlNode>
                     var jumpHeight = 10 + Math.abs(node.velocity.xAxis) * .5;
                     node.velocity.yAxis = Std.int(Math.min(20, jumpHeight));
                 }
-            case Down:
-                // node.velocity.yAxis--;
             case null:
                 if(node.position.downToGround)
                 {
