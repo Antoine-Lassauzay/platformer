@@ -1,0 +1,21 @@
+## JavaScript
+-main TestMain
+-lib munit
+-lib hamcrest
+-lib hx-ash
+-resource assets/castle.tmx@castle.tmx
+-cp src
+-cp test
+-js build/js_test.js
+
+--next
+
+## Neko
+-main TestMain
+-lib munit
+-lib hamcrest
+-lib hx-ash
+-resource assets/castle.tmx@castle.tmx
+-cp src
+-cp test
+-neko build/neko_test.n
