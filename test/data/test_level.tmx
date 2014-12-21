@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="10" tilewidth="70" tileheight="70">
+ <tileset firstgid="1" name="castle" tilewidth="70" tileheight="70">
+  <image source="castle.png" width="256" height="512"/>
+ </tileset>
+ <objectgroup name="blocks">
+  <object gid="1" x="137" y="629"/>
+  <object gid="1" x="266" y="604"/>
+  <object gid="1" x="393" y="568"/>
+  <object gid="1" x="705" y="437"/>
+  <object gid="2" x="841" y="421"/>
+ </objectgroup>
+</map>
