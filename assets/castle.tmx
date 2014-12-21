@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="10" tilewidth="70" tileheight="70">
+<map version="1.0" orientation="orthogonal" renderorder="right-up" width="12" height="8" tilewidth="70" tileheight="70" backgroundcolor="#8b8f8f">
  <tileset firstgid="1" name="castle" tilewidth="70" tileheight="70">
   <image source="castle.png" width="256" height="512"/>
  </tileset>
  <objectgroup name="blocks">
-  <object gid="1" x="137" y="629"/>
-  <object gid="1" x="266" y="604"/>
-  <object gid="1" x="393" y="568"/>
-  <object gid="1" x="502" y="528"/>
-  <object gid="1" x="611" y="486"/>
-  <object gid="1" x="705" y="437"/>
-  <object gid="2" x="841" y="421"/>
-  <object gid="2" x="841" y="490"/>
-  <object gid="2" x="841" y="560"/>
-  <object gid="2" x="840" y="631"/>
-  <object gid="2" x="840" y="700"/>
+  <object gid="1" x="66" y="488"/>
+  <object gid="1" x="195" y="463"/>
+  <object gid="1" x="322" y="427"/>
+  <object gid="1" x="431" y="387"/>
+  <object gid="1" x="540" y="345"/>
+  <object gid="1" x="634" y="296"/>
+  <object gid="2" x="770" y="280"/>
+  <object gid="2" x="770" y="349"/>
+  <object gid="2" x="770" y="419"/>
+  <object gid="2" x="769" y="490"/>
+  <object gid="2" x="769" y="559"/>
+  <object gid="1" x="141" y="70" width="70" height="70"/>
  </objectgroup>
 </map>

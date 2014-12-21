@@ -4,6 +4,5 @@
 -lib hamcrest
 -lib hx-ash
 -lib pixijs
--debug
 -cp src
 -js build/main.js

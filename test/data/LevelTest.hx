@@ -22,10 +22,17 @@ class LevelTest extends MatchersBase
     }
 
     @Test
+    public function testGetWidthAndHeight()
+    {
+        assertThat(_level.width, equalTo(1400)); // 20 tiles of 70px
+        assertThat(_level.height, equalTo(700)); // 70 tiles of 70px
+    }
+
+    @Test
     public function testGetObjects()
     {
         var blocks = _level.getObjects("blocks");
-        assertThat(blocks, arrayWithSize(11));
+        assertThat(blocks, arrayWithSize(5));
     }
 
     @Test
@@ -43,4 +50,5 @@ class LevelTest extends MatchersBase
             Assert.isNotNull( _level.getTileSet(object.gid) );
         }
     }
+
 }

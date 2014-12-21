@@ -3,7 +3,7 @@
 -lib munit
 -lib hamcrest
 -lib hx-ash
--resource assets/castle.tmx@castle.tmx
+-resource test/data/test_level.tmx@castle.tmx
 -cp src
 -cp test
 -js build/js_test.js
@@ -15,7 +15,7 @@
 -lib munit
 -lib hamcrest
 -lib hx-ash
--resource assets/castle.tmx@castle.tmx
+-resource test/data/test_level.tmx@castle.tmx
 -cp src
 -cp test
 -neko build/neko_test.n

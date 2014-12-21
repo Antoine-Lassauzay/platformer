@@ -1,16 +1,17 @@
 package ;
 
+import haxe.Http;
 import js.Browser;
 import StringTools;
 
 import pixi.renderers.IRenderer;
 import pixi.display.Sprite;
-import pixi.extras.TilingSprite;
 import pixi.display.MovieClip;
 import pixi.display.Stage;
 import pixi.textures.Texture;
 import pixi.utils.Detector;
 import pixi.loaders.AssetLoader;
+import pixi.geom.Rectangle;
 import ash.core.Engine;
 import ash.core.Entity;
 
@@ -29,33 +30,46 @@ import component.Velocity;
 import component.Box;
 import component.Oriented;
 
-class Main {
+import data.Level;
 
-    inline static var WIDTH : Int = 800;
-    inline static var HEIGHT : Int = 600;
+class Main
+{
 
     var _renderer : IRenderer;
     var _stage : Stage;
     var _loader : AssetLoader;
     var _engine : Engine;
+    var _xmlLoader : Http;
+    var _level : Level;
 
-    public function new() {
+    public function new()
+    {
+        _xmlLoader = new Http("assets/castle.tmx");
+        _xmlLoader.onData = levelLoaded;
+        _xmlLoader.request();
+    }
+
+    function levelLoaded(data :String)
+    {
+        _level = new Level(Xml.parse(data));
+        trace("World is " + _level.width + " by " + _level.height);
+
         _stage = new Stage(0xCCCCCC);
 
-        _renderer = Detector.autoDetectRenderer(WIDTH, HEIGHT);
+        _renderer = Detector.autoDetectRenderer(_level.width, _level.height);
         Browser.document.body.appendChild(_renderer.view);
 
         _loader = new AssetLoader
         ([
             "assets/player.json",
-            "assets/bg_castle.png"
+            "assets/castle.png"
         ]);
         _loader.onComplete = assetsLoaded;
         _loader.load();
 
         _engine = new Engine();
         _engine.addSystem(new KeyboardControlSystem(Browser.window), SystemPriority.INPUT);
-        _engine.addSystem(new PhysicsSystem({width: WIDTH, height: HEIGHT}), SystemPriority.PHYSICS);
+        _engine.addSystem(new PhysicsSystem({width: _level.width, height: _level.height}), SystemPriority.PHYSICS);
         _engine.addSystem(new DisplaySystem(_stage), SystemPriority.RENDERING);
         _engine.addSystem(new CharacterSystem(), SystemPriority.RENDERING);
 
@@ -64,25 +78,47 @@ class Main {
 
     function assetsLoaded()
     {
-        var texture = Texture.fromFrame("assets/bg_castle.png");
-        var background = new TilingSprite(texture, texture.width, texture.height);
-        background.width = 800;
-        background.height = 600;
-        _stage.addChild(background);
-
         var playerSprite = StatefulDisplay.buildPlayerSprite();
 
-        var playerEntity = new Entity();
-        playerEntity.add(new Display(playerSprite));
-        playerEntity.add(new StatefulDisplay(playerSprite));
-        playerEntity.add(new Movement(Still));
-        playerEntity.add(new Position(Std.int(WIDTH / 2), 0));
-        playerEntity.add(new KeyboardControlled());
-        playerEntity.add(new Velocity());
-        playerEntity.add(new Box(Std.int(playerSprite.width),
-                                 Std.int(playerSprite.height)));
-        playerEntity.add(new Oriented(Right));
-        _engine.addEntity(playerEntity);
+        var entity = new Entity();
+        entity.add(new Display(playerSprite));
+        entity.add(new StatefulDisplay(playerSprite));
+        entity.add(new Movement(Still));
+        entity.add(new Position(Std.int(_level.width / 2), 0));
+        entity.add(new KeyboardControlled());
+        entity.add(new Velocity());
+        entity.add(new Box(Std.int(playerSprite.width), Std.int(playerSprite.height)));
+        entity.add(new Oriented(Right));
+        _engine.addEntity(entity);
+
+        var blocks = _level.getObjects("blocks");
+        var sprite = null;
+        var entity = null;
+        var tileSet : TileSet = null;
+        var texture = null;
+        var baseTexture = null;
+
+        for(block in blocks)
+        {
+            tileSet = _level.getTileSet(block.gid);
+            baseTexture = Texture.fromFrame("assets/" + tileSet.source).baseTexture;
+            // TODO preload tile sources
+            var tx = (block.gid - tileSet.firstgid) % Math.floor(baseTexture.width / tileSet.tileWidth);
+            var ty = Math.floor((block.gid - tileSet.firstgid) / Math.floor(baseTexture.width / tileSet.tileWidth));
+            var rect = new Rectangle(
+                tx * tileSet.tileWidth, ty * tileSet.tileHeight,
+                tileSet.tileWidth, tileSet.tileHeight
+            );
+            texture = new Texture(baseTexture, rect);
+            sprite = new Sprite(texture);
+            entity = new Entity();
+            entity.add(new Display(sprite));
+            entity.add(new Box(Std.int(rect.width), Std.int(rect.height)));
+            entity.add(new Position(block.x, block.y - tileSet.tileHeight));
+
+            _stage.addChild(sprite);
+            _engine.addEntity(entity);
+        }
     }
 
     function animate()
