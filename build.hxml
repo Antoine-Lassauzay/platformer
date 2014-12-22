@@ -4,5 +4,7 @@
 -lib hamcrest
 -lib hx-ash
 -lib pixijs
+-lib polygonal-motor
 -cp src
+-debug
 -js build/main.js

@@ -4,7 +4,14 @@ import haxe.ds.StringMap;
 import haxe.ds.IntMap;
 
 typedef TileSet = {firstgid : Int, source : String, tileWidth : Int, tileHeight : Int };
-typedef TileObject = { x : Int, y : Int, gid : Int };
+typedef TileObject =
+{
+    x : Int,
+    y : Int,
+    gid : Int,
+    width : Null<Int>,
+    height : Null<Int>
+};
 
 class Level
 {
@@ -42,14 +49,19 @@ class Level
 
         var entities = new Array<TileObject>();
         var objectIterator = objectGroup.elementsNamed('object');
+        var objectWidth, objectHeight;
 
         for(object in objectIterator)
         {
+            objectWidth = object.get('width');
+            objectHeight = object.get('height');
             entities.push
             ({
                 x : Std.parseInt(object.get('x')),
                 y : Std.parseInt(object.get('y')),
-                gid : Std.parseInt(object.get('gid'))
+                gid : Std.parseInt(object.get('gid')),
+                width : objectWidth != null ? Std.parseInt(objectWidth) : null,
+                height : objectHeight != null ? Std.parseInt(objectHeight) : null
             });
         }
 

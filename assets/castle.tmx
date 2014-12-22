@@ -4,17 +4,24 @@
   <image source="castle.png" width="256" height="512"/>
  </tileset>
  <objectgroup name="blocks">
-  <object gid="1" x="66" y="488"/>
-  <object gid="1" x="195" y="463"/>
-  <object gid="1" x="322" y="427"/>
-  <object gid="1" x="431" y="387"/>
-  <object gid="1" x="540" y="345"/>
-  <object gid="1" x="634" y="296"/>
-  <object gid="2" x="770" y="280"/>
-  <object gid="2" x="770" y="349"/>
-  <object gid="2" x="770" y="419"/>
-  <object gid="2" x="769" y="490"/>
-  <object gid="2" x="769" y="559"/>
-  <object gid="1" x="141" y="70" width="70" height="70"/>
+  <object gid="1" x="210" y="420" width="70" height="70"/>
+  <object gid="1" x="350" y="350" width="70" height="70"/>
+  <object gid="1" x="490" y="280" width="70" height="70"/>
+  <object gid="1" x="630" y="280" width="70" height="70"/>
+  <object gid="2" x="770" y="490" width="70" height="70"/>
+  <object gid="2" x="770" y="560" width="70" height="70"/>
+  <object gid="2" x="0" y="560" width="70" height="70"/>
+  <object gid="2" x="0" y="490" width="70" height="70"/>
+  <object gid="2" x="70" y="560" width="70" height="70"/>
+  <object gid="2" x="140" y="560" width="70" height="70"/>
+  <object gid="2" x="210" y="560" width="70" height="70"/>
+  <object gid="2" x="280" y="560" width="70" height="70"/>
+  <object gid="2" x="350" y="560" width="70" height="70"/>
+  <object gid="2" x="420" y="560" width="70" height="70"/>
+  <object gid="2" x="490" y="560" width="70" height="70"/>
+  <object gid="2" x="560" y="560" width="70" height="70"/>
+  <object gid="2" x="630" y="560" width="70" height="70"/>
+  <object gid="2" x="700" y="560" width="70" height="70"/>
+  <object gid="2" x="70" y="490" width="70" height="70"/>
  </objectgroup>
 </map>

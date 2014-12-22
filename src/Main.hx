@@ -113,8 +113,11 @@ class Main
             sprite = new Sprite(texture);
             entity = new Entity();
             entity.add(new Display(sprite));
-            entity.add(new Box(Std.int(rect.width), Std.int(rect.height)));
             entity.add(new Position(block.x, block.y - tileSet.tileHeight));
+            if(block.width != null && block.height != null)
+            {
+                entity.add(new Box(block.width, block.height));
+            }
 
             _stage.addChild(sprite);
             _engine.addEntity(entity);

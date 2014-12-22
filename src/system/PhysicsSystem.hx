@@ -22,45 +22,116 @@ class PhysicsSystem extends ListIteratingSystem<BodyNode>
     function updateNode(node : BodyNode, time : Float)
     {
         var vel = node.velocity;
+        var oldX = node.position.x;
+        var oldY = node.position.y;
+        var targetX = oldX;
+        var targetY = oldY;
 
-        if(-0.01 > vel.xAxis || vel.xAxis > 0.01)
+        if(vel != null)
         {
-            if(node.orientation != null)
+            if(-0.01 > vel.xAxis || vel.xAxis > 0.01)
             {
-                if (vel.xAxis < 0 && node.orientation.value == Right)
-                    node.orientation.value = Left;
-                else if (vel.xAxis > 0 && node.orientation.value == Left)
-                    node.orientation.value = Right;
+                if(node.orientation != null)
+                {
+                    if (vel.xAxis < 0 && node.orientation.value == Right)
+                        node.orientation.value = Left;
+                    else if (vel.xAxis > 0 && node.orientation.value == Left)
+                        node.orientation.value = Right;
+                }
+                targetX = node.position.x + Std.int(vel.xAxis);
+
+                if(node.position.downToGround)
+                    vel.xAxis *= .9;
             }
-            node.position.x += Std.int(vel.xAxis);
+            else
+            {
+                vel.xAxis = 0;
+            }
 
-            if(node.position.downToGround)
-                vel.xAxis *= .9;
-        }
-        else
-        {
-            vel.xAxis = 0;
-        }
+            // gravity
+            if(!node.position.downToGround)
+                vel.yAxis -= 1;
 
-        var maxY = _world.height - node.box.height;
-        var groundDistance = maxY - node.position.y;
+            targetY = node.position.y - Std.int(vel.yAxis);
 
-        if(groundDistance > 0.01 || vel.yAxis > 0)
-        {
-            node.position.y -= Std.int(vel.yAxis);
-            if (node.position.y > maxY)
-                node.position.y = maxY;
-            vel.yAxis -= 1;
-            if(node.position.downToGround)
+            if(oldY != targetY || oldX != targetX)
                 node.position.downToGround = false;
         }
-        else
+
+        var diffXLeft;
+        var diffXRight;
+        var diffYTop;
+        var diffYBottom;
+
+        if(targetX != oldX)
         {
-            if(!node.position.downToGround)
+            // first evaluate collisions for x axis
+            for(otherNode in nodeList)
             {
-                node.position.downToGround = true;
-                vel.yAxis = 0;
+                if(otherNode.entity.id != node.entity.id)
+                {
+                    diffXLeft = targetX + node.box.width - otherNode.position.x;
+                    diffXRight = otherNode.position.x + otherNode.box.width - targetX;
+                    diffYTop = oldY + node.box.height - otherNode.position.y;
+                    diffYBottom = otherNode.position.y + otherNode.box.height - oldY;
+
+                    var hCollide = null;
+                    if(diffXLeft > 0 && diffXLeft <= otherNode.box.width)
+                        hCollide = -diffXLeft;
+                    else if(diffXRight > 0 && diffXRight <= otherNode.box.width)
+                        hCollide = diffXRight;
+
+                    var vCollide = null;
+                    if(diffYTop > 0 && diffYTop <= otherNode.box.height)
+                        vCollide = -diffYTop;
+                    else if(diffYBottom > 0 && diffYBottom <= otherNode.box.height)
+                        vCollide = diffYBottom;
+
+                    if(hCollide != null && vCollide != null)
+                    {
+                        targetX = oldX;
+                    }
+                }
             }
+            node.position.x = Std.int(Math.max(0, targetX));
+        }
+
+        if(oldY != targetY || node.position.downToGround)
+        {
+            for(otherNode in nodeList)
+            {
+                if(otherNode.entity.id != node.entity.id)
+                {
+                    diffXLeft = targetX + node.box.width - otherNode.position.x;
+                    diffXRight = otherNode.position.x + otherNode.box.width - targetX;
+                    diffYTop = targetY + node.box.height - otherNode.position.y;
+                    diffYBottom = otherNode.position.y + otherNode.box.height - targetY;
+
+                    var hCollide = null;
+                    if(diffXLeft > 0 && diffXLeft <= otherNode.box.width)
+                        hCollide = -diffXLeft;
+                    else if(diffXRight > 0 && diffXRight <= otherNode.box.width)
+                        hCollide = diffXRight;
+
+                    var vCollide = null;
+                    if(diffYTop > 0 && diffYTop <= otherNode.box.height)
+                        vCollide = -diffYTop;
+                    else if(diffYBottom > 0 && diffYBottom <= otherNode.box.height)
+                        vCollide = diffYBottom;
+
+                    if(hCollide != null && vCollide != null)
+                    {
+                        targetY += vCollide;
+                        // if collide from top
+                        if(vCollide < 0)
+                        {
+                            node.position.downToGround = true;
+                            vel.yAxis = 0;
+                        }
+                    }
+                }
+            }
+            node.position.y = targetY;
         }
     }
 }

@@ -26,13 +26,13 @@ class Display
         var updated = false;
         if(position.x != _displayObject.x)
         {
-            _displayObject.x = position.x;
+            _displayObject.x = position.x + _displayObject.pivot.x;
             updated = true;
         }
 
         if(position.y != _displayObject.y)
         {
-            _displayObject.y = position.y;
+            _displayObject.y = position.y + _displayObject.pivot.y;
             updated = true;
         }
 
