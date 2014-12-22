@@ -84,7 +84,7 @@ class Main
         entity.add(new Display(playerSprite));
         entity.add(new StatefulDisplay(playerSprite));
         entity.add(new Movement(Still));
-        entity.add(new Position(Std.int(_level.width / 2), 0));
+        entity.add(new Position(0, 0));
         entity.add(new KeyboardControlled());
         entity.add(new Velocity());
         entity.add(new Box(Std.int(playerSprite.width), Std.int(playerSprite.height)));
