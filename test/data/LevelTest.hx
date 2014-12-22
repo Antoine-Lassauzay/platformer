@@ -36,6 +36,16 @@ class LevelTest extends MatchersBase
     }
 
     @Test
+    public function testLastObjectHasWidthAndHeight()
+    {
+        // last object has width / height in XML
+        var blocks = _level.getObjects("blocks");
+        var lastObject = blocks[blocks.length - 1];
+        assertThat(lastObject.width, equalTo(70));
+        assertThat(lastObject.height, equalTo(70));
+    }
+
+    @Test
     @Ignore("Not sure how to expect exceptions")
     public function testGetObjectsForUnknownGroup()
     {

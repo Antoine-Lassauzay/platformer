@@ -8,6 +8,6 @@
   <object gid="1" x="266" y="604"/>
   <object gid="1" x="393" y="568"/>
   <object gid="1" x="705" y="437"/>
-  <object gid="2" x="841" y="421"/>
+  <object gid="2" x="841" y="421" width="70" height="70"/>
  </objectgroup>
 </map>
