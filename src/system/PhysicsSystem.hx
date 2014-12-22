@@ -108,15 +108,15 @@ class PhysicsSystem extends ListIteratingSystem<BodyNode>
                     diffYBottom = otherNode.position.y + otherNode.box.height - targetY;
 
                     var hCollide = null;
-                    if(diffXLeft > 0 && diffXLeft <= otherNode.box.width)
+                    if(diffXLeft > 10 && diffXLeft <= otherNode.box.width - 10)
                         hCollide = -diffXLeft;
-                    else if(diffXRight > 0 && diffXRight <= otherNode.box.width)
+                    else if(diffXRight > 10 && diffXRight <= otherNode.box.width - 10)
                         hCollide = diffXRight;
 
                     var vCollide = null;
-                    if(diffYTop > 0 && diffYTop <= otherNode.box.height)
+                    if(diffYTop > 10 && diffYTop <= otherNode.box.height)
                         vCollide = -diffYTop;
-                    else if(diffYBottom > 0 && diffYBottom <= otherNode.box.height)
+                    else if(diffYBottom > 10 && diffYBottom <= otherNode.box.height - 10)
                         vCollide = diffYBottom;
 
                     if(hCollide != null && vCollide != null)
