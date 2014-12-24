@@ -61,4 +61,10 @@ class LevelTest extends MatchersBase
         }
     }
 
+    @Test
+    public function getBackgroundColor()
+    {
+        Assert.isEqual(0x656969, _level.backgroundColor);
+    }
+
 }

@@ -17,6 +17,7 @@ class Level
 {
     public var width(default, null) : Int;
     public var height(default, null) : Int;
+    public var backgroundColor(default, null) : Int;
 
     var _source : Xml;
     var _groups : StringMap<Xml>;
@@ -38,6 +39,17 @@ class Level
         }
         width = Std.parseInt(mapNode.get('width')) * Std.parseInt(mapNode.get('tilewidth'));
         height = Std.parseInt(mapNode.get('height')) * Std.parseInt(mapNode.get('tileheight'));
+
+        var color = mapNode.get('backgroundcolor');
+
+        if(color != null)
+        {
+            backgroundColor =  Std.parseInt('0x' + color.substr(1));
+        }
+        else
+        {
+            backgroundColor = 0;
+        }
     }
 
     public function getObjects(group : String) : Array<TileObject>

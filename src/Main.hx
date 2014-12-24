@@ -55,7 +55,7 @@ class Main
         _level = new Level(Xml.parse(data));
         trace("World is " + _level.width + " by " + _level.height);
 
-        _stage = new Stage(0xCCCCCC);
+        _stage = new Stage(_level.backgroundColor);
 
         _renderer = Detector.autoDetectRenderer(_level.width, _level.height);
         Browser.document.body.appendChild(_renderer.view);
