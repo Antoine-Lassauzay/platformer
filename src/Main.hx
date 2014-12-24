@@ -1,6 +1,7 @@
 package ;
 
 import haxe.Http;
+import haxe.Timer;
 import js.Browser;
 import StringTools;
 
@@ -124,10 +125,14 @@ class Main
         }
     }
 
+    var _lastTime : Float = Timer.stamp();
+
     function animate()
     {
         Browser.window.requestAnimationFrame(cast animate);
-        _engine.update(1/60);
+        var time = Timer.stamp();
+        _engine.update(time - _lastTime);
+        _lastTime = time;
         _renderer.render(_stage);
     }
 
