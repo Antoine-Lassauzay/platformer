@@ -90,7 +90,7 @@ class KeyboardControlSystem extends ListIteratingSystem<KeyboardControlNode>
                 {
                     if(node.movement!= null && node.movement.value != Jump)
                         node.movement.value = Jump;
-                    var jumpHeight = 10 + Math.abs(node.velocity.xAxis) * .5;
+                    var jumpHeight = 12 + Math.abs(node.velocity.xAxis) * .5;
                     node.velocity.yAxis = Std.int(Math.min(20, jumpHeight));
                 }
             case null:

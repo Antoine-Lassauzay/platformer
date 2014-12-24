@@ -89,11 +89,18 @@ class PhysicsSystem extends ListIteratingSystem<BodyNode>
 
                     if(hCollide != null && vCollide != null)
                     {
-                        targetX = oldX;
+                        // trace("Collide");
+                        if(targetY != oldY)
+                        {
+                            if((vel.xAxis > 0 && vel.xAxis > hCollide) ||
+                               (vel.xAxis < 0 && vel.xAxis < hCollide))
+                            targetX += hCollide;
+                        }
+                        else
+                            targetX = oldX;
                     }
                 }
             }
-            node.position.x = Std.int(Math.max(0, targetX));
         }
 
         if(oldY != targetY || node.position.downToGround)
@@ -134,7 +141,12 @@ class PhysicsSystem extends ListIteratingSystem<BodyNode>
                     }
                 }
             }
-            node.position.y = targetY;
         }
+
+        if(targetX != oldX)
+            node.position.x = Std.int(Math.max(0, targetX));
+
+        if(targetY != oldY)
+            node.position.y = targetY;
     }
 }
