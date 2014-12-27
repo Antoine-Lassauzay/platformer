@@ -63,7 +63,8 @@ class Main
         _loader = new AssetLoader
         ([
             "assets/player.json",
-            "assets/castle.png"
+            "assets/castle.png",
+            "assets/bg_castle.png"
         ]);
         _loader.onComplete = assetsLoaded;
         _loader.load();

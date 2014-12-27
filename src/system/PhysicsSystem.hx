@@ -29,7 +29,7 @@ class PhysicsSystem extends ListIteratingSystem<BodyNode>
 
         if(vel != null)
         {
-            if(-0.01 > vel.xAxis || vel.xAxis > 0.01)
+            if(-0.1 > vel.xAxis || vel.xAxis > 0.1)
             {
                 if(node.orientation != null)
                 {

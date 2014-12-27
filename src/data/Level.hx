@@ -1,9 +1,15 @@
 package data;
 
 import haxe.ds.StringMap;
-import haxe.ds.IntMap;
 
-typedef TileSet = {firstgid : Int, source : String, tileWidth : Int, tileHeight : Int };
+typedef TileSet =
+{
+    name : String,
+    firstgid : Int,
+    source : String,
+    tileWidth : Int,
+    tileHeight : Int
+};
 typedef TileObject =
 {
     x : Int,
@@ -21,7 +27,7 @@ class Level
 
     var _source : Xml;
     var _groups : StringMap<Xml>;
-    var _sets : IntMap<Xml>;
+    var _sets : Array<TileSet>;
 
     public function new(source : Xml)
     {
@@ -32,11 +38,12 @@ class Level
         {
             _groups.set(objectGroup.get('name'), objectGroup);
         }
-        _sets = new IntMap<Xml>();
+        _sets = new Array<TileSet>();
         for (tileSet in mapNode.elementsNamed('tileset'))
         {
-            _sets.set(Std.parseInt(tileSet.get('firstgid')), tileSet);
+            _sets.push(tileSetFromXml(tileSet));
         }
+        _sets.sort(function(a, b) return a.firstgid - b.firstgid);
         width = Std.parseInt(mapNode.get('width')) * Std.parseInt(mapNode.get('tilewidth'));
         height = Std.parseInt(mapNode.get('height')) * Std.parseInt(mapNode.get('tileheight'));
 
@@ -83,28 +90,28 @@ class Level
     public function getTileSet(gid : Int) : TileSet
     {
         var matchingNode = null;
-        for(firstgid in _sets.keys())
+        for(currentNode in _sets.iterator())
         {
-            matchingNode = _sets.get(firstgid);
-            if(gid < firstgid)
+            if(gid < currentNode.firstgid)
                 break;
+            matchingNode = currentNode;
         }
+        return matchingNode;
+    }
 
-        if(matchingNode != null)
+    function tileSetFromXml(matchingNode : Xml) : TileSet
+    {
+        var imgWidth = Std.parseInt(matchingNode.get('tilewidth'));
+        var tileWidth = Std.parseInt(matchingNode.get('tilewidth'));
+        var tileHeight = Std.parseInt(matchingNode.get('tileheight'));
+        var image = matchingNode.elementsNamed('image').next();
+        return
         {
-            var imgWidth = Std.parseInt(matchingNode.get('tilewidth'));
-            var tileWidth = Std.parseInt(matchingNode.get('tilewidth'));
-            var tileHeight = Std.parseInt(matchingNode.get('tileheight'));
-            var image = matchingNode.elementsNamed('image').next();
-            return
-            {
-                tileWidth: tileWidth,
-                tileHeight: tileHeight,
-                source : image.get('source'),
-                firstgid : Std.parseInt(matchingNode.get('firstgid'))
-            }
+            name : matchingNode.get('name'),
+            tileWidth: tileWidth,
+            tileHeight: tileHeight,
+            source : image.get('source'),
+            firstgid : Std.parseInt(matchingNode.get('firstgid'))
         }
-
-        return null;
     }
 }

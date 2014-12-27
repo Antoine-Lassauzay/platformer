@@ -29,6 +29,7 @@ class DisplaySystem extends ListIteratingSystem<DisplayNode>
 
     function nodeAdded(node : DisplayNode):Void
     {
+        node.display.setTo(node.position);
         node.display.addTo(_stage);
     }
 }

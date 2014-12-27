@@ -57,14 +57,14 @@ class LevelTest extends MatchersBase
     {
         for (object in _level.getObjects("blocks"))
         {
-            Assert.isNotNull( _level.getTileSet(object.gid) );
+            assertThat(_level.getTileSet(object.gid).name, equalTo("castle"));
         }
     }
 
     @Test
     public function getBackgroundColor()
     {
-        Assert.isEqual(0x656969, _level.backgroundColor);
+        assertThat(_level.backgroundColor, equalTo(0x656969));
     }
 
 }
