@@ -1,8 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-up" width="12" height="8" tilewidth="70" tileheight="70" backgroundcolor="#6c7884">
+<map version="1.0" orientation="orthogonal" renderorder="right-up" width="12" height="8" tilewidth="70" tileheight="70" backgroundcolor="#869595">
  <tileset firstgid="1" name="castle" tilewidth="70" tileheight="70">
   <image source="castle.png" width="256" height="512"/>
  </tileset>
+ <tileset firstgid="22" name="bg_castle" tilewidth="256" tileheight="256">
+  <image source="bg_castle.png" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="23" name="castle_misc" tilewidth="70" tileheight="70">
+  <image source="castle_misc.png" width="256" height="512"/>
+ </tileset>
+ <objectgroup name="props" visible="0">
+  <object gid="22" x="140" y="280"/>
+  <object gid="22" x="560" y="420"/>
+  <object gid="25" x="70" y="350"/>
+  <object gid="25" x="420" y="210"/>
+  <object gid="25" x="630" y="70"/>
+  <object gid="41" x="0" y="420"/>
+  <object gid="38" x="0" y="350"/>
+  <object gid="30" x="140" y="490"/>
+  <object gid="30" x="210" y="490"/>
+  <object gid="30" x="280" y="490"/>
+  <object gid="30" x="350" y="490"/>
+  <object gid="30" x="420" y="490"/>
+  <object gid="30" x="560" y="490"/>
+  <object gid="30" x="490" y="490"/>
+  <object gid="30" x="630" y="490"/>
+  <object gid="30" x="700" y="490"/>
+ </objectgroup>
  <objectgroup name="blocks">
   <object gid="1" x="210" y="420" width="70" height="70"/>
   <object gid="1" x="280" y="420" width="70" height="70"/>
@@ -26,5 +50,10 @@
   <object gid="1" x="560" y="280" width="70" height="70"/>
   <object gid="1" x="630" y="210" width="70" height="70"/>
   <object gid="1" x="700" y="210" width="70" height="70"/>
+  <object x="150" y="451" width="615" height="31">
+   <properties>
+    <property name="damage" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

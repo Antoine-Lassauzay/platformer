@@ -64,7 +64,8 @@ class Main
         ([
             "assets/player.json",
             "assets/castle.png",
-            "assets/bg_castle.png"
+            "assets/bg_castle.png",
+            "assets/castle_misc.png"
         ]);
         _loader.onComplete = assetsLoaded;
         _loader.load();
@@ -80,8 +81,67 @@ class Main
 
     function assetsLoaded()
     {
-        var playerSprite = StatefulDisplay.buildPlayerSprite();
+        var props = _level.getObjects("props");
+        var blocks = _level.getObjects("blocks");
+        var sprite = null;
+        var entity = null;
+        var tileSet : TileSet = null;
+        var texture = null;
+        var baseTexture = null;
 
+        // add props
+        for(prop in props)
+        {
+            tileSet = _level.getTileSet(prop.gid);
+            baseTexture = Texture.fromFrame("assets/" + tileSet.source).baseTexture;
+            var tx = (prop.gid - tileSet.firstgid) % Math.floor(baseTexture.width / tileSet.tileWidth);
+            var ty = Math.floor((prop.gid - tileSet.firstgid) / Math.floor(baseTexture.width / tileSet.tileWidth));
+            var rect = new Rectangle(
+                tx * tileSet.tileWidth, ty * tileSet.tileHeight,
+                tileSet.tileWidth, tileSet.tileHeight
+            );
+            texture = new Texture(baseTexture, rect);
+            sprite = new Sprite(texture);
+            sprite.x = prop.x;
+            sprite.y = prop.y - tileSet.tileHeight;
+            _stage.addChild(sprite);
+        }
+
+        // add blocks
+        for(block in blocks)
+        {
+            entity = new Entity();
+            tileSet = _level.getTileSet(block.gid);
+
+            if(tileSet != null)
+            {
+                baseTexture = Texture.fromFrame("assets/" + tileSet.source).baseTexture;
+                var tx = (block.gid - tileSet.firstgid) % Math.floor(baseTexture.width / tileSet.tileWidth);
+                var ty = Math.floor((block.gid - tileSet.firstgid) / Math.floor(baseTexture.width / tileSet.tileWidth));
+                var rect = new Rectangle(
+                    tx * tileSet.tileWidth, ty * tileSet.tileHeight,
+                    tileSet.tileWidth, tileSet.tileHeight
+                );
+                texture = new Texture(baseTexture, rect);
+                sprite = new Sprite(texture);
+                entity.add(new Position(block.x, block.y - block.height));
+                entity.add(new Display(sprite));
+                _stage.addChild(sprite);
+            }
+            else
+            {
+                entity.add(new Position(block.x, block.y));
+            }
+
+            if(block.width != null && block.height != null)
+            {
+                entity.add(new Box(block.width, block.height));
+            }
+            _engine.addEntity(entity);
+        }
+
+        // add player sprite last
+        var playerSprite = StatefulDisplay.buildPlayerSprite();
         var entity = new Entity();
         entity.add(new Display(playerSprite));
         entity.add(new StatefulDisplay(playerSprite));
@@ -92,38 +152,6 @@ class Main
         entity.add(new Box(Std.int(playerSprite.width), Std.int(playerSprite.height)));
         entity.add(new Oriented(Right));
         _engine.addEntity(entity);
-
-        var blocks = _level.getObjects("blocks");
-        var sprite = null;
-        var entity = null;
-        var tileSet : TileSet = null;
-        var texture = null;
-        var baseTexture = null;
-
-        for(block in blocks)
-        {
-            tileSet = _level.getTileSet(block.gid);
-            baseTexture = Texture.fromFrame("assets/" + tileSet.source).baseTexture;
-            // TODO preload tile sources
-            var tx = (block.gid - tileSet.firstgid) % Math.floor(baseTexture.width / tileSet.tileWidth);
-            var ty = Math.floor((block.gid - tileSet.firstgid) / Math.floor(baseTexture.width / tileSet.tileWidth));
-            var rect = new Rectangle(
-                tx * tileSet.tileWidth, ty * tileSet.tileHeight,
-                tileSet.tileWidth, tileSet.tileHeight
-            );
-            texture = new Texture(baseTexture, rect);
-            sprite = new Sprite(texture);
-            entity = new Entity();
-            entity.add(new Display(sprite));
-            entity.add(new Position(block.x, block.y - tileSet.tileHeight));
-            if(block.width != null && block.height != null)
-            {
-                entity.add(new Box(block.width, block.height));
-            }
-
-            _stage.addChild(sprite);
-            _engine.addEntity(entity);
-        }
     }
 
     var _lastTime : Float = Timer.stamp();
