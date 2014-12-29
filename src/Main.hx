@@ -167,7 +167,7 @@ class Main
         entity.add(new Oriented(Right));
         _engine.addEntity(entity);
 
-        _stage.filters = [new LightFilter()];
+        _stage.filters = [new LightFilter(455, 560-170, 0xFFB500)];
     }
 
     var _lastTime : Float = Timer.stamp();
