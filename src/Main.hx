@@ -6,6 +6,7 @@ import js.Browser;
 import StringTools;
 
 import pixi.renderers.IRenderer;
+import pixi.primitives.Graphics;
 import pixi.display.Sprite;
 import pixi.display.MovieClip;
 import pixi.display.Stage;
@@ -60,6 +61,10 @@ class Main
         trace("World is " + _level.width + " by " + _level.height);
 
         _stage = new Stage(_level.backgroundColor);
+        var bgRect = new Graphics();
+        bgRect.beginFill(_level.backgroundColor);
+        bgRect.drawRect(0, 0, _level.width, _level.height);
+        _stage.addChild(bgRect);
 
         _renderer = Detector.autoDetectRenderer(_level.width, _level.height);
         Browser.document.body.appendChild(_renderer.view);
@@ -132,7 +137,6 @@ class Main
                 );
                 texture = new Texture(baseTexture, rect);
                 sprite = new Sprite(texture);
-                sprite.shader = new LightFilter();
                 entity.add(new Position(block.x, block.y - block.height));
                 entity.add(new Display(sprite));
                 _stage.addChild(sprite);
@@ -162,6 +166,8 @@ class Main
         entity.add(new Box(Std.int(playerSprite.width), Std.int(playerSprite.height)));
         entity.add(new Oriented(Right));
         _engine.addEntity(entity);
+
+        _stage.filters = [new LightFilter()];
     }
 
     var _lastTime : Float = Timer.stamp();
