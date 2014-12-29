@@ -4,7 +4,8 @@
 -lib hamcrest
 -lib hx-ash
 -lib pixijs
--lib polygonal-motor
+-lib stats.js.hx
+-resource src/filter/light.glsl@light.glsl
 -cp src
 -debug
 -js build/main.js

@@ -16,6 +16,8 @@ import pixi.geom.Rectangle;
 import ash.core.Engine;
 import ash.core.Entity;
 
+import js.stats.Stats;
+
 import system.SystemPriority;
 import system.DisplaySystem;
 import system.KeyboardControlSystem;
@@ -32,6 +34,7 @@ import component.Box;
 import component.Oriented;
 
 import data.Level;
+import filter.LightFilter;
 
 class Main
 {
@@ -42,6 +45,7 @@ class Main
     var _engine : Engine;
     var _xmlLoader : Http;
     var _level : Level;
+    var _stats : Stats;
 
     public function new()
     {
@@ -75,6 +79,10 @@ class Main
         _engine.addSystem(new PhysicsSystem({width: _level.width, height: _level.height}), SystemPriority.PHYSICS);
         _engine.addSystem(new DisplaySystem(_stage), SystemPriority.RENDERING);
         _engine.addSystem(new CharacterSystem(), SystemPriority.RENDERING);
+
+        _stats = new Stats();
+        _stats.setMode(0);
+        Browser.document.body.appendChild(_stats.domElement);
 
         Browser.window.requestAnimationFrame(cast animate);
     }
@@ -124,6 +132,7 @@ class Main
                 );
                 texture = new Texture(baseTexture, rect);
                 sprite = new Sprite(texture);
+                sprite.shader = new LightFilter();
                 entity.add(new Position(block.x, block.y - block.height));
                 entity.add(new Display(sprite));
                 _stage.addChild(sprite);
@@ -142,6 +151,7 @@ class Main
 
         // add player sprite last
         var playerSprite = StatefulDisplay.buildPlayerSprite();
+        playerSprite.shader = new LightFilter();
         var entity = new Entity();
         entity.add(new Display(playerSprite));
         entity.add(new StatefulDisplay(playerSprite));
@@ -160,7 +170,9 @@ class Main
     {
         Browser.window.requestAnimationFrame(cast animate);
         var time = Timer.stamp();
+        _stats.begin();
         _engine.update(time - _lastTime);
+        _stats.end();
         _lastTime = time;
         _renderer.render(_stage);
     }
