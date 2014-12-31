@@ -7,5 +7,5 @@
 -lib stats.js.hx
 -resource src/filter/light.glsl@light.glsl
 -cp src
--debug
+# -debug
 -js build/main.js

@@ -9,7 +9,7 @@
  <tileset firstgid="23" name="castle_misc" tilewidth="70" tileheight="70">
   <image source="castle_misc.png" width="256" height="512"/>
  </tileset>
- <objectgroup name="props" visible="0">
+ <objectgroup name="props">
   <object gid="22" x="140" y="280"/>
   <object gid="22" x="560" y="420"/>
   <object gid="25" x="70" y="350"/>
@@ -50,7 +50,7 @@
   <object gid="1" x="560" y="280" width="70" height="70"/>
   <object gid="1" x="630" y="210" width="70" height="70"/>
   <object gid="1" x="700" y="210" width="70" height="70"/>
-  <object x="150" y="451" width="615" height="31">
+  <object x="147" y="452" width="615" height="31">
    <properties>
     <property name="damage" value="1"/>
    </properties>

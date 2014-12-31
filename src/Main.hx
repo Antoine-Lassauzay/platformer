@@ -155,7 +155,7 @@ class Main
 
         // add player sprite last
         var playerSprite = StatefulDisplay.buildPlayerSprite();
-        playerSprite.shader = new LightFilter();
+        // playerSprite.filters = [new LightFilter([{x:455, y:560-170}, {x:105, y:560-310}], 0xFFB500)];
         var entity = new Entity();
         entity.add(new Display(playerSprite));
         entity.add(new StatefulDisplay(playerSprite));
@@ -167,7 +167,6 @@ class Main
         entity.add(new Oriented(Right));
         _engine.addEntity(entity);
 
-        _stage.filters = [new LightFilter(455, 560-170, 0xFFB500)];
     }
 
     var _lastTime : Float = Timer.stamp();
@@ -181,6 +180,7 @@ class Main
         _stats.end();
         _lastTime = time;
         _renderer.render(_stage);
+        // _stage.filters[0].update();
     }
 
     static function main()
