@@ -33,6 +33,8 @@ import component.KeyboardControlled;
 import component.Velocity;
 import component.Box;
 import component.Oriented;
+import component.Health;
+import component.CollisionDamage;
 
 import data.Level;
 import filter.LightFilter;
@@ -146,6 +148,16 @@ class Main
                 entity.add(new Position(block.x, block.y));
             }
 
+            if(block.properties != null)
+            {
+                if (block.properties.exists('damage'))
+                {
+                    entity.add(new CollisionDamage(
+                        Std.parseInt(block.properties.get('damage'))
+                    ));
+                }
+            }
+
             if(block.width != null && block.height != null)
             {
                 entity.add(new Box(block.width, block.height));
@@ -165,6 +177,7 @@ class Main
         entity.add(new Velocity());
         entity.add(new Box(Std.int(playerSprite.width), Std.int(playerSprite.height)));
         entity.add(new Oriented(Right));
+        entity.add(new Health(1, 1));
         _engine.addEntity(entity);
 
     }
